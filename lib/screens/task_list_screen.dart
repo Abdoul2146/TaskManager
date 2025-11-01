@@ -62,6 +62,16 @@ class TaskListScreen extends ConsumerWidget {
 
     // Show error message if loading tasks failed
     if (taskState.status == TaskListStatus.error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${taskState.error}'),
+            backgroundColor: isDark ? Colors.red[700] : Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      });
       return Scaffold(
         appBar: AppBar(
           toolbarHeight: 80,
@@ -292,11 +302,38 @@ class TaskListItem extends ConsumerWidget {
               // Checkbox for marking task as complete/incomplete
               GestureDetector(
                 onTap: () async {
-                  await ref
-                      .read(taskListProvider.notifier)
-                      .updateTask(
-                        task.copyWith(isCompleted: !task.isCompleted),
-                      );
+                  try {
+                    await ref
+                        .read(taskListProvider.notifier)
+                        .updateTask(
+                          task.copyWith(isCompleted: !task.isCompleted),
+                        );
+                    final isDark =
+                        Theme.of(context).brightness == Brightness.dark;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          task.isCompleted
+                              ? 'Marked as not done'
+                              : 'Marked as done',
+                        ),
+                        backgroundColor: isDark
+                            ? Colors.green[700]
+                            : Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  } catch (e) {
+                    final isDark =
+                        Theme.of(context).brightness == Brightness.dark;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Failed to update task'),
+                        backgroundColor: isDark ? Colors.red[700] : Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
                 },
                 child: Icon(
                   task.isCompleted
@@ -353,7 +390,6 @@ class TaskListItem extends ConsumerWidget {
                             color: Colors.redAccent,
                           ),
                           onPressed: () async {
-                            // Show confirmation dialog before deleting
                             final confirm = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -376,9 +412,38 @@ class TaskListItem extends ConsumerWidget {
                               ),
                             );
                             if (confirm == true && task.id != null) {
-                              await ref
-                                  .read(taskListProvider.notifier)
-                                  .deleteTask(task.id!);
+                              try {
+                                await ref
+                                    .read(taskListProvider.notifier)
+                                    .deleteTask(task.id!);
+                                final isDark =
+                                    Theme.of(context).brightness ==
+                                    Brightness.dark;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text('Task deleted'),
+                                    backgroundColor: isDark
+                                        ? Colors.green[700]
+                                        : Colors.green,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              } catch (e) {
+                                final isDark =
+                                    Theme.of(context).brightness ==
+                                    Brightness.dark;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                      'Failed to delete task',
+                                    ),
+                                    backgroundColor: isDark
+                                        ? Colors.red[700]
+                                        : Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
                             }
                           },
                         ),

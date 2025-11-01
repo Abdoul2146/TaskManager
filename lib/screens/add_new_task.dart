@@ -39,6 +39,23 @@ class _AddNewTaskScreenState extends ConsumerState<AddNewTaskScreen> {
     super.dispose();
   }
 
+  void _showSnackBar(
+    BuildContext context,
+    String message, {
+    bool error = false,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: error
+            ? (isDark ? Colors.red[700] : Colors.red)
+            : (isDark ? Colors.green[700] : Colors.green),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   /// Opens a date picker dialog and updates the selected date if user picks one.
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -66,14 +83,18 @@ class _AddNewTaskScreenState extends ConsumerState<AddNewTaskScreen> {
       priority: _selectedPriority,
     );
     final notifier = ref.read(taskListProvider.notifier);
-    if (widget.task == null) {
-      // Add new task
-      await notifier.addTask(task);
-    } else {
-      // Update existing task
-      await notifier.updateTask(task);
+    try {
+      if (widget.task == null) {
+        await notifier.addTask(task);
+        _showSnackBar(context, 'Task added successfully!');
+      } else {
+        await notifier.updateTask(task);
+        _showSnackBar(context, 'Task updated successfully!');
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      _showSnackBar(context, 'Failed to save task', error: true);
     }
-    Navigator.pop(context);
   }
 
   @override
