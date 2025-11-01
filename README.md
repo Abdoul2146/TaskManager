@@ -88,13 +88,6 @@ lib/
 - Use the search bar to filter tasks.
 - Tap the sun/moon icon to toggle dark/light mode (your choice is saved).
 
-## Code Quality
-
-- Clean, readable code with consistent naming conventions.
-- Business logic is separated from UI components.
-- Error handling and loading states are implemented.
-- Comments are provided for complex logic.
-
 ## Dependencies
 
 - [Flutter](https://flutter.dev/)
@@ -111,4 +104,4 @@ MIT
 
 ## Credits
 
-Developed by Abdoul. Inspired by best practices in Flutter app architecture and state management.
+Developed by Abdulhakim Abdurrazak Sulaiman
