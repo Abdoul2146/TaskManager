@@ -391,6 +391,9 @@ class TaskListItem extends ConsumerWidget {
                         child: Text(
                           task.description,
                           style: Theme.of(context).textTheme.labelSmall,
+                          maxLines: 2, // Show only the first 2 lines
+                          overflow:
+                              TextOverflow.ellipsis, // Add ellipsis if longer
                         ),
                       ),
                     Padding(
