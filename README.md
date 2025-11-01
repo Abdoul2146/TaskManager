@@ -66,6 +66,9 @@ The app uses a feature-based architecture with clear separation of concerns:
 	flutter run
 	```
 
+### Apk FIle
+link to apk; https://drive.google.com/file/d/1PUGu0-pP2oTXpoKUgfcdG-1o1GtEWT2O/view?usp=sharing
+
 ### Directory Structure
 
 ```
